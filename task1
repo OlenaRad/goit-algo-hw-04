@@ -1,0 +1,55 @@
+import timeit
+import random
+
+# Алгоритм сортування злиттям
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left_half = merge_sort(arr[:mid])
+    right_half = merge_sort(arr[mid:])
+    return merge(left_half, right_half)
+
+def merge(left, right):
+    result = []
+    left_index, right_index = 0, 0
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] < right[right_index]:
+            result.append(left[left_index])
+            left_index += 1
+        else:
+            result.append(right[right_index])
+            right_index += 1
+    result.extend(left[left_index:])
+    result.extend(right[right_index:])
+    return result
+
+# Алгоритм сортування вставками
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
+
+# Тестування часу виконання
+def test_sorting_algorithms():
+    data_sizes = [10, 100, 1000, 10000]  # Розміри даних для тестування
+    algorithms = {
+        "Merge Sort": merge_sort,
+        "Insertion Sort": insertion_sort,
+        "TimSort (Python)": sorted
+    }
+    for size in data_sizes:
+        print(f"Data Size: {size}")
+        data = [random.randint(0, 1000) for _ in range(size)]
+        for name, algorithm in algorithms.items():
+            timer = timeit.Timer(lambda: algorithm(data.copy()))
+            time_taken = timer.timeit(number=10) / 10  # Середній час виконання на 10 повторах
+            print(f"{name}: {time_taken:.6f} seconds")
+        print()
+
+test_sorting_algorithms()
